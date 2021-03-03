@@ -1,5 +1,6 @@
 # Smart-brain
-A React App with Node.js + Express as Backend. It uses a Face Recognition API to detect faces in your images
+A React App with Node.js + Express as Backend. It uses a Face Recognition API to detect faces in your images.
+
 [Watch it Live](https://muleyashutosh.github.io/smart-brain)
 
 ## Available Scripts
