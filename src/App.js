@@ -8,7 +8,8 @@ import Register from './components/Register/Register';
 import Rank from './components/Rank/Rank';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Particles from 'react-particles-js';
-
+import NProgress from 'nprogress';
+import "nprogress/nprogress.css";
 
 
 const particleOptions = {
@@ -100,6 +101,7 @@ class App extends Component {
 
 
   OnButtonClick = () => {
+    NProgress.start();
     this.setState({imageUrl: this.state.input})
     fetch('https://whispering-sierra-61887.herokuapp.com/imageApi', {
       method: 'post',
@@ -127,6 +129,7 @@ class App extends Component {
           })
           .then(response => response.json())
           .then(count => {
+            NProgress.done()
             this.setState(Object.assign(this.state.user, {entries: count}))
           })
         }
