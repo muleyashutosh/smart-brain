@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
+import NProgress from 'nprogress';
+import "nprogress/nprogress.css";
 
 
 class SignIn extends React.Component {
@@ -20,6 +22,7 @@ class SignIn extends React.Component {
   }
 
   OnSignInSubmit = () => {
+    NProgress.start();
     const {signInEmail, signInPassword } = this.state;
     fetch('https://whispering-sierra-61887.herokuapp.com/signin', {
       method: 'post',
@@ -36,11 +39,10 @@ class SignIn extends React.Component {
       if(data.id) {
         this.props.loadUser(data)
         this.props.OnRouteChange('home');
+        NProgress.done()
       } 
     })
 
-
-    
   }
 
   render() {
