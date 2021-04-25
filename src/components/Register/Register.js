@@ -53,7 +53,7 @@ class Register extends React.Component {
         } else {
           this.setState({
             requestFailed: true,
-            errorMessage: "Unable to register",
+            errorMessage: user,
           });
         }
         NProgress.done();
