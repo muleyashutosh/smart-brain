@@ -15,3 +15,11 @@
   bottom: 0;
   z-index: -1;
 }
+
+.error {
+  color: #EA4335;
+  font-size: 0.875rem;
+  margin-bottom: 15px;
+}
+
+
