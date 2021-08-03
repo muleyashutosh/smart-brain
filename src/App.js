@@ -95,7 +95,8 @@ class App extends Component {
     this.setState({ box: box });
   };
 
-  OnButtonClick = async () => {
+  OnButtonClick = async (e) => {
+    e.preventDefault();
     NProgress.start();
     this.setState({ imageUrl: this.state.input });
     try {

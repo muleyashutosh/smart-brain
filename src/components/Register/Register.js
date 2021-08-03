@@ -30,34 +30,40 @@ class Register extends React.Component {
     this.setState({ password: event.target.value });
   };
 
-  OnRegisterSubmit = (event) => {
+  OnRegisterSubmit = async (event) => {
     event.preventDefault();
     NProgress.start();
     const { email, password, name } = this.state;
-    fetch("https://whispering-sierra-61887.herokuapp.com/register", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((user) => {
-        if (user.id) {
-          this.props.loadUser(user);
-          this.props.OnRouteChange("home");
-        } else {
-          this.setState({
-            requestFailed: true,
-            errorMessage: user,
-          });
+    try {
+      const response = await fetch(
+        "https://whispering-sierra-61887.herokuapp.com/register",
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
         }
-        NProgress.done();
-      });
+      );
+      const user = await response.json();
+
+      if (user.id) {
+        this.props.loadUser(user);
+        this.props.OnRouteChange("home");
+      } else {
+        this.setState({
+          requestFailed: true,
+          errorMessage: user,
+        });
+      }
+      NProgress.done();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {

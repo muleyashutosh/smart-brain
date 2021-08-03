@@ -26,38 +26,43 @@ class SignIn extends React.Component {
     this.setState({ requestFailed: false });
   };
 
-  OnSignInSubmit = (event) => {
+  OnSignInSubmit = async (event) => {
     event.preventDefault();
     NProgress.start();
     const { signInEmail, signInPassword } = this.state;
-    fetch("https://whispering-sierra-61887.herokuapp.com/signin", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: signInEmail,
-        password: signInPassword,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.id) {
-          this.props.loadUser(data);
-          this.props.OnRouteChange("home");
-        } else if (data === "Wrong Credentials") {
-          this.setState({
-            requestFailed: true,
-            errorMessage: "Invalid Email/Password",
-          });
-        } else {
-          this.setState({
-            requestFailed: true,
-            errorMessage: "Error connecting to Server",
-          });
+    try {
+      const response = await fetch(
+        "https://whispering-sierra-61887.herokuapp.com/signin",
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: signInEmail,
+            password: signInPassword,
+          }),
         }
-        NProgress.done();
-      });
+      );
+      const data = await response.json();
+      if (data.id) {
+        this.props.loadUser(data);
+        this.props.OnRouteChange("home");
+      } else if (data === "Wrong Credentials") {
+        this.setState({
+          requestFailed: true,
+          errorMessage: "Invalid Email/Password",
+        });
+      } else {
+        this.setState({
+          requestFailed: true,
+          errorMessage: "Error connecting to Server",
+        });
+      }
+      NProgress.done();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {
