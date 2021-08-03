@@ -95,24 +95,29 @@ class App extends Component {
     this.setState({ box: box });
   };
 
-  OnButtonClick = () => {
+  OnButtonClick = async () => {
     NProgress.start();
     this.setState({ imageUrl: this.state.input });
-    fetch("https://whispering-sierra-61887.herokuapp.com/imageApi", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        input: this.state.input,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        this.updateBoxState(this.CalculateBoundingBox(response));
-        if (response) {
-          // update entry count in server
-          fetch("https://whispering-sierra-61887.herokuapp.com/image", {
+    try {
+      const resp = await fetch(
+        "https://whispering-sierra-61887.herokuapp.com/imageApi",
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input: this.state.input,
+          }),
+        }
+      );
+      const response = await resp.json();
+      this.updateBoxState(this.CalculateBoundingBox(response));
+      if (response) {
+        // update entry count in server
+        const update = await fetch(
+          "https://whispering-sierra-61887.herokuapp.com/image",
+          {
             method: "put",
             headers: {
               "Content-Type": "application/json",
@@ -120,17 +125,15 @@ class App extends Component {
             body: JSON.stringify({
               id: this.state.user.id,
             }),
-          })
-            .then((response) => response.json())
-            .then((count) => {
-              NProgress.done();
-              this.setState(Object.assign(this.state.user, { entries: count }));
-            });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          }
+        );
+        const count = await update.json();
+        NProgress.done();
+        this.setState(Object.assign(this.state.user, { entries: count }));
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   OnRouteChange = (route) => {
